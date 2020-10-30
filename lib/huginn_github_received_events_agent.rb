@@ -1,0 +1,4 @@
+require 'huginn_agent'
+
+#HuginnAgent.load 'huginn_github_received_events_agent/concerns/my_agent_concern'
+HuginnAgent.register 'huginn_github_received_events_agent/github_received_events_agent'
