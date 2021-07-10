@@ -113,7 +113,7 @@ module Agents
         log payload
       end
 
-      if interpolated['changes_only'] == 'true'
+      if interpolated['changes_only'] == 'true' && !payload.empty?
         if payload.to_s != memory['last_status']
           if payload
             if "#{memory['last_status']}" == ''
@@ -153,9 +153,11 @@ module Agents
           memory['last_status'] = payload.to_s
         end
       else
-        create_event payload: payload
-        if payload.to_s != memory['last_status']
-          memory['last_status'] = payload.to_s
+        if !payload.empty?
+          create_event payload: payload
+          if payload.to_s != memory['last_status']
+            memory['last_status'] = payload.to_s
+          end
         end
       end
     end    
