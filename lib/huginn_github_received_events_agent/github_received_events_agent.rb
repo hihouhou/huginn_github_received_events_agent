@@ -24,28 +24,29 @@ module Agents
 
     event_description <<-MD
       Events look like this:
-        {
-          "id": "XXXXXXXXXXX",
-          "type": "WatchEvent",
-          "actor": {
-            "id": XXXXXX,
-            "login": "XXXXXX",
-            "display_login": "XXXXXX",
-            "gravatar_id": "",
-            "url": "https://api.github.com/users/XXXXXX",
-            "avatar_url": "https://avatars.githubusercontent.com/u/XXXXXX?"
-          },
-          "repo": {
-            "id": 76460706,
-            "name": "hihouhou/docker-sslscan",
-            "url": "https://api.github.com/repos/hihouhou/docker-sslscan"
-          },
-          "payload": {
-            "action": "started"
-          },
-          "public": true,
-          "created_at": "2020-10-06T08:55:11Z"
-        }
+
+          {
+            "id": "XXXXXXXXXXX",
+            "type": "WatchEvent",
+            "actor": {
+              "id": XXXXXX,
+              "login": "XXXXXX",
+              "display_login": "XXXXXX",
+              "gravatar_id": "",
+              "url": "https://api.github.com/users/XXXXXX",
+              "avatar_url": "https://avatars.githubusercontent.com/u/XXXXXX?"
+            },
+            "repo": {
+              "id": 76460706,
+              "name": "hihouhou/docker-sslscan",
+              "url": "https://api.github.com/repos/hihouhou/docker-sslscan"
+            },
+            "payload": {
+              "action": "started"
+            },
+            "public": true,
+            "created_at": "2020-10-06T08:55:11Z"
+          }
     MD
 
     def default_options
