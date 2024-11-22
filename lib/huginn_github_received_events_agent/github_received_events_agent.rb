@@ -93,6 +93,17 @@ module Agents
 
     private
 
+    def log_curl_output(code,body)
+
+      log "request status : #{code}"
+
+      if interpolated['debug'] == 'true'
+        log "body"
+        log body
+      end
+
+    end
+
     def fetch
       uri = URI.parse("https://api.github.com/users/hihouhou/received_events")
       request = Net::HTTP::Get.new(uri)
@@ -105,34 +116,22 @@ module Agents
       response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
         http.request(request)
       end
-    
-      log "fetch event request status : #{response.code}"
+
+      log_curl_output(response.code,response.body)
     
       payload = JSON.parse(response.body)
 
-      if interpolated['debug'] == 'true'
-        log payload
-      end
-
       if interpolated['changes_only'] == 'true' && !payload.empty?
-        if payload.to_s != memory['last_status']
+        if payload != memory['last_status']
           if payload
-            if "#{memory['last_status']}" == ''
-              payload.each do |event|
-                if interpolated['debug'] == 'true'
-                  log event
-                end
-                create_event payload: event
+            payload.each do |event|
+              found = false
+              if interpolated['debug'] == 'true'
+                log "found is #{found}!"
+                log event
               end
-            else
-              last_status = memory['last_status'].gsub("=>", ": ").gsub(": nil,", ": null,").gsub(": nil}", ": null}")
-              last_status = JSON.parse(last_status)
-              payload.each do |event|
-                found = false
-                if interpolated['debug'] == 'true'
-                  log "found is #{found}!"
-                  log event
-                end
+              if !memory['last_status'].nil? && !memory['last_status'].empty?
+                last_status = memory['last_status']
                 last_status.each do |eventbis|
                   if event == eventbis
                     found = true
@@ -141,23 +140,25 @@ module Agents
                     log "found is #{found}!"
                   end
                 end
-                if found == false
-                  if interpolated['debug'] == 'true'
-                    log "found is #{found}! so event created"
-                    log event
-                  end
-                  create_event payload: event
+              end
+              if found == false
+                if interpolated['debug'] == 'true'
+                  log "found is #{found}! so event created"
+                  log event
                 end
+                create_event payload: event
               end
             end
           end
-          memory['last_status'] = payload.to_s
+        else
+          log "no diff"
         end
+        memory['last_status'] = payload
       else
         if !payload.empty?
           create_event payload: payload
-          if payload.to_s != memory['last_status']
-            memory['last_status'] = payload.to_s
+          if payload != memory['last_status']
+            memory['last_status'] = payload
           end
         end
       end
